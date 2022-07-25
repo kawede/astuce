@@ -1,0 +1,206 @@
+<?php include ('mains/header.php');
+if(isset($_GET['id']) and !empty($_GET['id'])):
+    $id=htmlspecialchars($_GET['id']);
+    $myqwery=$db->prepare("SELECT * FROM cour WHERE cour.id=:id");
+    $myqwery->execute(array(
+    'id'=>$id
+    ));
+    if ($myqwery):
+    $data=$myqwery->fetchAll(PDO::FETCH_OBJ);
+    // var_dump($data);
+    if (!empty($data)):       
+  ?>
+
+   <!-- Class container here -->
+  <script>
+  document.title=" <?=$data[0]->cour_title ?>"
+</script>
+ <div class="container mt-2">
+     <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-8 mt-4">
+                                  <?php
+              if (isset($_POST['btninscrit'])) {
+                # code...
+                extract($_POST);
+                if (!empty($id_cour)  && !empty($full_name) && !empty($email) && !empty($phone) && !empty($Adresse)) {
+                  # code...
+
+                    $ps = $db->prepare("INSERT INTO inscrption_cour(id_cour,full_name,email,phone,Adresse) VALUES(:id_cour,:full_name,:email,:phone,:Adresse) ");
+                    $statement = $ps->execute(array(
+                      ':id_cour'   =>  $id_cour,
+                      ':full_name'    =>  $full_name,
+                      ':email'   =>  $email,
+                      ':phone'    =>  $phone,
+                      ':Adresse'   =>  $Adresse
+                    ));
+
+                    if (!empty($statement)) {
+                      # code...
+                       echo '<b class=" text-center alert alert-success"> Enregistrement reusi </b>';
+                    
+                    }
+                    else{
+                      echo("oups!!!!");
+                    }
+                  }
+                }
+                else{
+                  // echo("Tous les champs sont requis");
+                }
+
+              ?>
+            
+            <div class="alert" style="background-color: rgb(0,169,246);color:white; font-family: candara;">
+              <span><i class="fa fa-star-half-o" aria-hidden="true"></i> <span><i class="fa fa-star-half-o" aria-hidden="true"></i>  <span><i class="fa fa-star-half-o" aria-hidden="true"></i> <span><i class="fa fa-star-half-o" aria-hidden="true"></i></span></span></span></span>
+              <h2><?=$data[0]->cour_title ?></h2>
+            </div>
+            <br>
+             <div class="form-group row">
+                <div class="col-sm-4 mb-3 mb-sm-0">
+                 <img src="./admin/images/<?= $data[0]->imageformateur; ?>" style="height:40px; border-radius:50%;" alt="...">
+            <span style="font-weight: bold;">Par <a href="#"><?=$data[0]->nom_complet?></a></span>
+                </div>
+                <div class="col-sm-4">
+                   <span>Categorie: <span class="text-info" style="font-weight:bold"><a href="#"><?=$data[0]->designation?></a></span></span>
+                </div>
+              </div>
+              <hr>
+              <div class="form-group row">
+                <div class="col-sm-4 mb-3 mb-sm-0">
+                  <span class="text-primary" style="font-weight: bold">Niveau du cour</span><br>
+                   <span>Niveau du cour</span>
+                </div>
+                <div class="col-sm-3">
+                   <span class="text-danger" style="font-weight: bold;">Total Inscrit</span><br>
+                   <p class="text-center"><?php echo(countInscription($db,$id)) ?></p>
+                </div>
+                 <div class="col-sm-3">
+                   <span class="text-muted" style="font-weight:bold;">Derniere mise à jour</span><br>
+                   <span><?=$data[0]->date?></span>
+                </div>
+              </div>
+              <hr>
+              <h4>Description</h4>
+              <p style="text-align:justify;"><?=$data[0]->description?></p>
+               <h4>Prerequis</h4>
+              <p style="text-align:justify;"><?=$data[0]->prerequis?></p>
+              <br>
+               <h4>A propos de l'auteur</h4>
+               <br>
+              <div class="media border">
+                <img src="./admin/images/<?= $data[0]->imageformateur; ?>" style="height:80px; border-radius:50%;" class="align-self-start mr-3" alt="...">
+                <div class="media-body">  <br>
+                  <h5 class="mt-0"><?=$data[0]->nom_complet?></h5>
+                  <p class="text-left"><?=$data[0]->description?></p>
+                </div>
+              </div>
+
+
+
+          </div>
+          <div class="col-md-4">
+            <img src="./admin/images/<?= $data[0]->image;?>" class="card-img-top img-thumbnail" alt="...">
+            <hr>
+            <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#logoutModal12">S'inscrire maintenant</button>
+            <hr>
+            <p class="text-left"style="font-size:30px; font-weight:bold;"><?=$data[0]->A_formateur?></p>
+            <hr>
+            <h5 class="text-left">Lien Youtube</h5>
+            <p class="text-left text-primary"><a href="<?=$data[0]->Youtube?>"><?=$data[0]->Youtube?></p></a>
+            
+            <hr>
+            <h5>Public ciblé</h5>
+             <p style="text-align:justify;"><?=$data[0]->Public?></p>
+            <hr>
+            <h5>Document pdf</h5>
+            <?php 
+              $myqwery=$db->prepare("SELECT * FROM cour_pdf WHERE id_cour=:id_cour ");
+              $myqwery->execute(array("id_cour"=>$id));
+              $datas=$myqwery->fetchAll(PDO::FETCH_OBJ);
+              if ($datas):
+              foreach($datas as $token1): 
+            ?>
+            <p style="text-align:justify;"><?=$token1->designation?> <span><a href="admin/documents/<?=$token1->pdf?>"><i class="fa fa-download"title="telecharger" style="float:right; color:red;"></i></span></a></p>
+
+            <?php
+           endforeach;
+           else: 
+            ?>
+
+           <span style="font-family: candara; font-weight: bold; color:red;">Pdf non trouvé!</span>
+          <?php
+
+          endif;
+           ?>
+          </div>
+        </div>
+       </div>
+     </div>
+   </div>
+    <?php endif;?>
+    <?php endif;?>
+    <?php endif;?>
+ </div><br>
+ <?php include ('mains/footer.php'); ?>
+</body>
+<div class="modal fade" id="logoutModal12" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"  style="color:black; font-weight: bold; font-family:candara;">Prendre une inscription</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="alert-info">Inscrivez-vous pour prendre part à cette formation</p>
+             
+          <div class="form-group row">
+            <div class="col-sm-12 mb-3 mb-sm-0">
+             <form action="" method="post" enctype="multipart/form-data">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                    <input type="text"style="color:black; font-family: candara; background-color:white;" class="form-control" name="id_cour"  id="exampleFirstName" placeholder="Cour" value="<?=$data[0]->idc?>" >
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-12">
+                    <input type="text"style="color:black; font-family: candara; background-color:white;" class="form-control" name="full_name"  id="exampleFirstName" placeholder="Nom et prenom" >
+                </div>
+              </div>
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <input type="text" style="color:black; font-family: candara;background-color:white;" class="form-control" required="" rows="9" name="email" placeholder="Email" >
+                  </div>
+                </div>
+                 <div class="form-group row">
+                  <div class="col-sm-12">
+                    <input type="text" style="color:black; font-family: candara;background-color:white;" class="form-control" required="" rows="9" name="phone" placeholder="Telephone" >
+                  </div>
+                </div>
+                 <div class="form-group row">
+                  <div class="col-sm-12">
+                    <input type="text" style="color:black; font-family: candara;background-color:white;" class="form-control" required="" rows="9" name="Adresse" placeholder="Adresse" >
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary btn-block" name="btninscrit">
+                 S'inscrire Maintenant
+                </button>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
