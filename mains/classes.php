@@ -61,7 +61,7 @@
         <p style="color:rgb(23,48,88);">dgd</p>
          <div class="text-center text-white " style=" font-size:16px; margin-top:15px; font-weight: bold;">Traductions professionnelles sur vos fichiers d'origine dans 2 langues (Anglais et Francais) quel que soit votre secteur d'activité, grâce à nos chefs de projet et traducteurs proffessionnels. </div>
          <div class="container text-center">
-            <a href="classes"><button type="button" class="btn btn" style="background-color:rgb(21,170,213);color:white; margin: 20px; font-weight: bold;">Commander des traductions</button></a>
+            <a href="orders"><button type="button" class="btn btn" style="background-color:rgb(21,170,213);color:white; margin: 20px; font-weight: bold;">Commander des traductions</button></a>
           </div>
       </div>
       <br>

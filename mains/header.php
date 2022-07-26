@@ -275,7 +275,7 @@ footer {
       </div>
       	<nav class="navbar navbar-expand-lg " style="background-color: white; background-image:url('assets/images/')"  >
 
-    	  <a class="navbar-brand" href="index">
+    	  <a class="navbar-brand" href="accueil">
     	  	<img src="assets/images/AGA_(120).jpg" style="max-width:200px; ">
     	  </a>
     	  <button class="navbar-toggler navbar-toggler-right card" 
